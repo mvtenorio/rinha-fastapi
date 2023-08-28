@@ -19,7 +19,7 @@ class PessoaOut(PessoaIn):
 
 
 @app.post("/pessoas", response_model=PessoaOut, status_code=status.HTTP_201_CREATED)
-def create_pessoa(response: Response, pessoa_in: PessoaIn):
+def create_pessoa(pessoa_in: PessoaIn, response: Response):
     pessoa_out = PessoaOut(id=uuid4(), **pessoa_in.dict())
     response.headers["Location"] = app.url_path_for(
         "show_pessoa", pessoa_id=pessoa_out.id
@@ -28,14 +28,35 @@ def create_pessoa(response: Response, pessoa_in: PessoaIn):
     return pessoa_out
 
 
-@app.get("/pessoas/{pessoa_id}")
-def show_pessoa(pessoa_id: str):
-    return {}
+@app.get("/pessoas/{pessoa_id}", response_model=PessoaOut)
+def show_pessoa(pessoa_id: UUID):
+    return PessoaOut(
+        id=pessoa_id,
+        nome="Nome",
+        apelido="Apelido",
+        nascimento="2023-08-28",
+        stack=["Python"],
+    )
 
 
-@app.get("/pessoas")
+@app.get("/pessoas", response_model=list[PessoaOut])
 def search_pessoas(t: str):
-    return {}
+    return [
+        PessoaOut(
+            id="f7379ae8-8f9b-4cd5-8221-51efe19e721b",
+            apelido="josé",
+            nome="José Roberto",
+            nascimento="2000-10-01",
+            stack=["C#", "Node", "Oracle"],
+        ),
+        PessoaOut(
+            id="5ce4668c-4710-4cfb-ae5f-38988d6d49cb",
+            apelido="ana",
+            nome="Ana Barbosa",
+            nascimento="1985-09-23",
+            stack=["Node", "Postgres"],
+        ),
+    ]
 
 
 @app.get("/contagem-pessoas")
