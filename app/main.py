@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, Field, constr
 
 app = FastAPI()
 
@@ -23,7 +23,7 @@ class PessoaIn(BaseModel):
 
 
 class PessoaOut(PessoaIn):
-    id: UUID
+    id: UUID = Field(default_factory=uuid4)
 
     @classmethod
     def from_dict(cls, pessoa):
@@ -38,7 +38,7 @@ class PessoaOut(PessoaIn):
 
 @app.post("/pessoas", response_model=PessoaOut, status_code=status.HTTP_201_CREATED)
 async def create_pessoa(pessoa_in: PessoaIn, response: Response, db=Depends(get_db)):
-    pessoa_out = PessoaOut(id=uuid4(), **pessoa_in.dict())
+    pessoa_out = PessoaOut(**pessoa_in.dict())
 
     await db.execute(
         "INSERT INTO pessoas (id, apelido, nome, nascimento, stack) "
