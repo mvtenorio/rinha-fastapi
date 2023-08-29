@@ -81,6 +81,9 @@ async def search_pessoas(t: str, db=Depends(get_db)):
     return [PessoaOut.from_dict(pessoa) for pessoa in pessoas]
 
 
-@app.get("/contagem-pessoas")
-def contagem_pessoas():
-    return 0
+@app.get("/contagem-pessoas", response_model=int)
+async def contagem_pessoas(db=Depends(get_db)):
+    cursor = await db.execute("SELECT COUNT(*) FROM pessoas")
+    result = await cursor.fetchone()
+    return result[0]
+
