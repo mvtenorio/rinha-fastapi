@@ -1,12 +1,18 @@
 services:
-  api1:
+  api01: &api
     build: .
-    ports:
-      - "8000:80"
     volumes:
       - .:/code
-  redis:
-    image: "redis:alpine"
+  api02: *api
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "9999:9999"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api01
+      - api02
   db:
     image: "postgres:alpine"
     environment:
