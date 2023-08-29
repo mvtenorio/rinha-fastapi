@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 app = FastAPI()
 
@@ -16,8 +16,8 @@ async def get_db():
 
 
 class PessoaIn(BaseModel):
-    apelido: str
-    nome: str
+    apelido: constr(max_length=32)
+    nome: constr(max_length=100)
     nascimento: date
     stack: list[str] | None = None
 
