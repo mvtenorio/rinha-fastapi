@@ -9,7 +9,7 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   api01: &api
     build: .
-    depends:
+    depends_on:
       - db
     volumes:
       - .:/code
