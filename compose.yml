@@ -7,6 +7,8 @@ services:
       - POSTGRES_DB=rinha
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  redis:
+    image: "redis:alpine"
   api01: &api
     build: .
     depends_on:
