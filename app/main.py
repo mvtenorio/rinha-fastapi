@@ -18,7 +18,8 @@ async def get_db():
 
 
 async def get_redis():
-    yield Redis(host="redis", port=6379, decode_responses=True)
+    with Redis(host="redis", port=6379, decode_responses=True) as redis:
+        yield redis
 
 
 class PessoaIn(BaseModel):
